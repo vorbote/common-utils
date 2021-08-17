@@ -94,7 +94,6 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <!-- Javadoc -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
@@ -107,8 +106,7 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <!-- GPG -->
-                    <plugin> <!-- 进行延签 -->
+                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <version>1.5</version>
