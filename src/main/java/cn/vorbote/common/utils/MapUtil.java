@@ -48,7 +48,6 @@ public final class MapUtil {
     private static final String CLASS_DATE_TIME = "class cn.vorbote.time.DateTime";
 
 
-
     /**
      * Dynamically convert object to dictionary/map
      *
@@ -143,7 +142,7 @@ public final class MapUtil {
                     }
 
                     // 设置值
-                    SetFieldValue(entry.getKey(), obj, entry.getValue());
+                    SetFieldValue(obj, entry.getKey(), entry.getValue());
                 } catch (Exception e) {
                     log.error("Map to Object failed.");
                 }
@@ -153,8 +152,9 @@ public final class MapUtil {
 
 
     /**
-     * Get the specified field value, equivalent to
-     * <code>obj.getFieldName</code>
+     * Get the specified field value, equivalent to {@code obj.getFieldName}. Before using
+     * this method, please make sure that you have a <strong>getter</strong> for that field
+     * you need.
      *
      * @param fieldName Field name
      * @param obj       object
@@ -163,7 +163,7 @@ public final class MapUtil {
      * @throws Exception Abnormalities that may appear, such as
      *                   <code>java.lang.NullPointerException</code>, etc.
      */
-    public static String GetFieldValue(String fieldName, Object obj) throws Exception {
+    public static String GetFieldValue(Object obj, String fieldName) throws Exception {
         try {
             String methodName = getMethodName("get", fieldName);
             Method method = getDeclaredMethod(obj, methodName);
@@ -180,15 +180,16 @@ public final class MapUtil {
 
 
     /**
-     * Set the specified field value, which is equivalent to
-     * <code>obj.setFieldName(fieldValue)</code>
+     * Get the specified field value, equivalent to {@code obj.setFieldName}. Before using
+     * this method, please make sure that you have a <strong>setter</strong> for that field
+     * you need.
      *
      * @param fieldName  Field name
      * @param obj        The object will be set
      * @param fieldValue Field Value
      * @throws Exception Any Exception could be generated while converting
      */
-    public static void SetFieldValue(String fieldName, Object obj, Object fieldValue) throws Exception {
+    public static void SetFieldValue(Object obj, String fieldName, Object fieldValue) throws Exception {
         try {
             String methodName = getMethodName("set", fieldName);
             Method method = getDeclaredMethod(obj, methodName, fieldValue.getClass());

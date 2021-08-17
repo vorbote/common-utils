@@ -17,7 +17,9 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <project.version>2.0.0.RELEASE</project.version>
+
+        <!--由cn.vorbote编写的dependency-->
+        <project.version>2.0.1.RELEASE</project.version>
         <commons.version>2.0.0.RELEASE</commons.version>
         <time-lib.version>2.0.0.RELEASE</time-lib.version>
     </properties>
