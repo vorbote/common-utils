@@ -4,6 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+
+        <!--由cn.vorbote编写的dependency-->
+        <project.version>2.0.1.RELEASE</project.version>
+        <commons.version>2.0.0.RELEASE</commons.version>
+        <time-lib.version>2.0.0.RELEASE</time-lib.version>
+    </properties>
+
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
@@ -14,16 +24,6 @@
     <groupId>cn.vorbote</groupId>
     <artifactId>common-utils</artifactId>
     <version>${project.version}</version>
-
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-
-        <!--由cn.vorbote编写的dependency-->
-        <project.version>2.0.1.RELEASE</project.version>
-        <commons.version>2.0.0.RELEASE</commons.version>
-        <time-lib.version>2.0.0.RELEASE</time-lib.version>
-    </properties>
 
     <name>VorBotE :: Commons Utils</name>
     <description>Commonly Used Utils</description>
@@ -42,6 +42,8 @@
         </dependency>
     </dependencies>
 
+    <packaging>jar</packaging>
+
     <developers>
         <developer>
             <name>Theodore Hills</name>
@@ -49,8 +51,6 @@
             <url>https://vorbote.cn</url>
         </developer>
     </developers>
-
-    <packaging>jar</packaging>
 
     <licenses>
         <license>
