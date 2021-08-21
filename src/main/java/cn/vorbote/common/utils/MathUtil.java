@@ -7,12 +7,13 @@ import java.util.Stack;
 
 /**
  * This util class can make some formal calculation.
+ *
+ * @author vorbote thills@vorbote.cn
  */
 @Slf4j
 public final class MathUtil {
 
     private MathUtil() {
-
     }
 
     /**
@@ -77,102 +78,5 @@ public final class MathUtil {
      */
     public static boolean IsNotBetween(Number num, Number noLess, Number noGreater) {
         return !IsBetween(num, noLess, noGreater);
-    }
-
-    /**
-     * Transformat a decimal number to hex number.
-     *
-     * @param value   The number with decimal format.
-     * @param toUpper To specify will it be transformatted to Upper case.
-     *                Default in lower case.
-     * @return The hex string of the number.
-     */
-    public static String ToHexString(int value, boolean toUpper) {
-        Stack<String> stack = new Stack<>();
-        for (; value != 0; value /= 16) {
-            int temp = value % 16;
-            switch (temp) {
-                case 0:
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                case 6:
-                case 7:
-                case 8:
-                case 9:
-                    stack.push(String.valueOf(temp));
-                    break;
-                case 10:
-                    stack.push("a");
-                    break;
-                case 11:
-                    stack.push("b");
-                    break;
-                case 12:
-                    stack.push("c");
-                    break;
-                case 13:
-                    stack.push("d");
-                    break;
-                case 14:
-                    stack.push("e");
-                    break;
-                case 15:
-                    stack.push("f");
-                    break;
-            }
-        }
-        StringBuilder builder = new StringBuilder("0x");
-        while (!stack.isEmpty()) {
-            var e = stack.pop();
-            builder.append(e);
-        }
-        if (toUpper) {
-            return builder.toString().toUpperCase();
-        } else {
-            return builder.toString();
-        }
-    }
-
-    /**
-     * Transformat a decimal number to binary number.
-     *
-     * @param value   The number with decimal format.
-     * @return The binary string of the number.
-     */
-    public static String ToBinaryString(int value) {
-        Stack<String> stack = new Stack<>();
-        for (; value != 0; value /= 2) {
-            int temp = value % 2;
-            stack.push(String.valueOf(temp));
-        }
-        StringBuilder builder = new StringBuilder("0b");
-        while (!stack.isEmpty()) {
-            var e = stack.pop();
-            builder.append(e);
-        }
-        return builder.toString();
-    }
-
-    /**
-     * Transformat a decimal number to octal number.
-     *
-     * @param value   The number with decimal format.
-     * @return The octal string of the number.
-     */
-    public static String ToOctalString(int value) {
-        Stack<String> stack = new Stack<>();
-        for (; value != 0; value /= 8) {
-            int temp = value % 8;
-            stack.push(String.valueOf(temp));
-        }
-        StringBuilder builder = new StringBuilder("0");
-        while (!stack.isEmpty()) {
-            var e = stack.pop();
-            builder.append(e);
-        }
-        return builder.toString();
     }
 }

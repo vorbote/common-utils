@@ -9,9 +9,7 @@
         <maven.compiler.target>11</maven.compiler.target>
 
         <!--由cn.vorbote编写的dependency-->
-        <project.version>2.0.1.RELEASE</project.version>
-        <commons.version>2.0.0.RELEASE</commons.version>
-        <time-lib.version>2.0.0.RELEASE</time-lib.version>
+        <project.version>2.0.4.RELEASE</project.version>
     </properties>
 
     <parent>
@@ -32,13 +30,13 @@
         <dependency>
             <groupId>cn.vorbote</groupId>
             <artifactId>commons</artifactId>
-            <version>${commons.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>cn.vorbote</groupId>
             <artifactId>time-lib</artifactId>
-            <version>${time-lib.version}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
@@ -85,6 +83,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
+                        <version>3.2.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -97,6 +96,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.3.0</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>

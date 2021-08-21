@@ -12,12 +12,9 @@ import java.util.Map;
 
 /**
  * This util class can be used for automatic conversion
- * between dictionaries/maps and objects
- * P.S: If your data cannot be transferred, please
- * contact me via email by sending the data's
- * detail to theodore0126@outlook.com.
+ * between dictionaries/maps and objects.
  *
- * @author TheodoreHills
+ * @author vorbote thills@vorbote.cn
  */
 @Slf4j
 public final class MapUtil {
@@ -46,7 +43,6 @@ public final class MapUtil {
     private static final String CLASS_DOUBLE = "class java.lang.Double";
     private static final String CLASS_BOOL = "class java.lang.Boolean";
     private static final String CLASS_DATE_TIME = "class cn.vorbote.time.DateTime";
-
 
     /**
      * Dynamically convert object to dictionary/map
@@ -158,10 +154,10 @@ public final class MapUtil {
      *
      * @param fieldName Field name
      * @param obj       object
-     * @return A string of the object corresponding
-     * to the object value
-     * @throws Exception Abnormalities that may appear, such as
-     *                   <code>java.lang.NullPointerException</code>, etc.
+     * @return A string of the object corresponding to the object value.
+     * @throws Exception Exceptions will be caused due to other methods, please see upriver
+     *                   methods for details of these Exceptions' info.
+     * @see Field#setAccessible(boolean)
      */
     public static String GetFieldValue(Object obj, String fieldName) throws Exception {
         try {
@@ -178,6 +174,31 @@ public final class MapUtil {
         return "";
     }
 
+    /**
+     * Get the specified field value, equivalent to {@code obj.getFieldName}. Before using
+     * this method, please make sure that you have a <strong>getter</strong> for that field
+     * you need.
+     *
+     * @param fieldName Field name
+     * @param obj       object
+     * @return A string of the object corresponding to the object value
+     * @throws Exception Exceptions will be caused due to other methods, please see upriver
+     *                   methods for details of these Exceptions' info.
+     * @see Field#get(Object)
+     * @see Field#setAccessible(boolean)
+     */
+    public static <T> T GetFieldValue(Object obj, String fieldName, Class<T> requiredClass) throws Exception {
+        try {
+            var objClass = obj.getClass();
+            var field = objClass.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            var value = field.get(obj);
+            return cast(value, requiredClass);
+        } catch (Exception ex) {
+            log.error("Failed getting object: " + ex.getLocalizedMessage());
+            throw new Exception("Failed getting object.");
+        }
+    }
 
     /**
      * Get the specified field value, equivalent to {@code obj.setFieldName}. Before using
@@ -245,5 +266,20 @@ public final class MapUtil {
         } else {
             return String.valueOf(obj);
         }
+    }
+
+    /**
+     * Cast the value to the required type.
+     *
+     * @param value        The value.
+     * @param requiredType The required type.
+     * @param <T>          The generic type.
+     * @return The value in the form of the instance of the required type.
+     */
+    private static <T> T cast(Object value, Class<T> requiredType) {
+        if (requiredType.isInstance(value)) {
+            return requiredType.cast(value);
+        }
+        return null;
     }
 }

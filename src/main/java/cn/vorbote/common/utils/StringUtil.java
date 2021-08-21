@@ -1,14 +1,13 @@
 package cn.vorbote.common.utils;
 
 /**
- * This is the string util
+ * This is a string util.
  *
- * @author TheodoreHills
+ * @author vorbote thills@vorbote.cn
  */
 public final class StringUtil {
 
     private StringUtil() {
-
     }
 
     /**
