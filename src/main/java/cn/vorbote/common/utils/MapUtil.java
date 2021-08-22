@@ -4,6 +4,7 @@ import cn.vorbote.time.DateTime;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -76,14 +77,34 @@ public final class MapUtil {
      * @param map Map data to be convert
      * @param obj Target object should be explicitly given to a special
      *            instantiated object
+     * @see #SetObject(Map, Class)
      */
-    public static void SetObject(Map<String, Object> map, Object obj) {
+    @Deprecated
+    public static void SetObject(Map<String, Object> map, Object obj)
+            throws Exception {
+        obj = SetObject(map, obj.getClass());
+    }
+
+    /**
+     *
+     * @param map
+     * @param requiredType
+     * @param <T>
+     * @return
+     * @throws NoSuchMethodException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws InstantiationException
+     */
+    public static <T> T SetObject(Map<String, Object> map, Class<T> requiredType)
+            throws Exception {
+        T bean = requiredType.getConstructor().newInstance();
         if (map != null) {
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 try {
                     String entryValue = entry.getValue().toString();
                     // 根据字段名获取字段
-                    Field field = obj.getClass().getDeclaredField(entry.getKey());
+                    Field field = requiredType.getDeclaredField(entry.getKey());
 
                     // 判断类中对应字段的Class
                     switch (field.getGenericType().toString()) {
@@ -138,12 +159,13 @@ public final class MapUtil {
                     }
 
                     // 设置值
-                    SetFieldValue(obj, entry.getKey(), entry.getValue());
+                    SetFieldValue(bean, entry.getKey(), entry.getValue());
                 } catch (Exception e) {
                     log.error("Map to Object failed.");
                 }
             }
         }
+        return bean;
     }
 
 
