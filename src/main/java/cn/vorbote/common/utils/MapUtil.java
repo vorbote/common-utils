@@ -86,15 +86,31 @@ public final class MapUtil {
     }
 
     /**
+     * Set a object by reflection, it will create a new instance by this method,
+     * you don't have to pass an instance to it anymore.
      *
-     * @param map
-     * @param requiredType
-     * @param <T>
-     * @return
-     * @throws NoSuchMethodException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws InstantiationException
+     * @param map          The map which put the data.
+     * @param requiredType The type you want.
+     * @param <T>          The type you want.
+     * @return An instance of the class you provided, the instance contains all
+     * the field values with the same key in the Map.
+     * @throws NoSuchMethodException     This method will get a no-param
+     *                                   constructor, if the class you provided
+     *                                   doesn't contain this class, this
+     *                                   exception will be threw out.
+     * @throws IllegalAccessException    This method will use the no-param
+     *                                   constructor to create a new instance,
+     *                                   if your constructor is modified by
+     *                                   modifier {@code private},
+     *                                   {@code protected} or the default
+     *                                   modifier.
+     * @throws InvocationTargetException If the underlying constructor throws
+     *                                   an exception, then it will be throws
+     *                                   out by this method.
+     * @throws InstantiationException    If you provided an abstract class, it
+     *                                   will throws out this exception.
+     * @see Class#getConstructor(Class...)
+     * @see java.lang.reflect.Constructor#newInstance(Object...)
      */
     public static <T> T SetObject(Map<String, Object> map, Class<T> requiredType)
             throws Exception {
@@ -215,7 +231,7 @@ public final class MapUtil {
             var field = objClass.getDeclaredField(fieldName);
             field.setAccessible(true);
             var value = field.get(obj);
-            return cast(value, requiredClass);
+            return Cast(value, requiredClass);
         } catch (Exception ex) {
             log.error("Failed getting object: " + ex.getLocalizedMessage());
             throw new Exception("Failed getting object.");
@@ -291,14 +307,16 @@ public final class MapUtil {
     }
 
     /**
-     * Cast the value to the required type.
+     * Cast the value to the required type. The value had better to be a
+     * instance of {@code Object} or the super class of the required
+     * class.
      *
      * @param value        The value.
      * @param requiredType The required type.
-     * @param <T>          The generic type.
+     * @param <T>          The required type.
      * @return The value in the form of the instance of the required type.
      */
-    private static <T> T cast(Object value, Class<T> requiredType) {
+    public static <T> T Cast(Object value, Class<T> requiredType) {
         if (requiredType.isInstance(value)) {
             return requiredType.cast(value);
         }
