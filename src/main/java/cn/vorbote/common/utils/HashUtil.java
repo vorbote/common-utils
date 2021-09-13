@@ -14,13 +14,12 @@ import java.util.Objects;
  * This tool class can convert String to different types of
  * results.
  *
- * @author TheodoreHills
+ * @author vorbote thills@vorbote.cn
  */
 @Slf4j
 public final class HashUtil {
 
     private HashUtil() {
-
     }
 
     /**
@@ -35,8 +34,13 @@ public final class HashUtil {
      * </ul>
      *
      * @param method Encrypt method.
-     * @param value         The string will be encrypted
+     * @param value  The string will be encrypted
      * @return The encrypted String
+     * @throws UnsupportedAlgorithmException If the param method used an item
+     *                                       which is not listed on the list
+     *                                       above, the exception will be
+     *                                       throw.
+     * @see MessageDigest#getInstance(String)
      */
     public static String Encrypt(EncryptMethod method, String value) {
         switch (method) {
@@ -154,15 +158,19 @@ public final class HashUtil {
      * Encrypt a string to a HexString
      *
      * @param method The specified method.
-     * @param data The origin data.
-     * @param key  The key.
+     * @param data   The origin data.
+     * @param key    The key.
      * @return The encrypted string.
      */
     public static String Encrypt(EncryptMethod method, String key, String data) {
         if (data == null || key == null) {
             return null;
         }
-        return castToHexString(asString(Objects.requireNonNull(EncryptToByteStream(EncryptMethod.RC4, data, key))));
+        return castToHexString(
+                asString(
+                        Objects.requireNonNull(EncryptToByteStream(EncryptMethod.RC4, data, key))
+                )
+        );
 
     }
 
@@ -182,6 +190,7 @@ public final class HashUtil {
 
     /**
      * Load key and transfer to byte array.
+     *
      * @param key The key.
      * @return The byte key.
      */
@@ -210,6 +219,7 @@ public final class HashUtil {
 
     /**
      * Transfer a string to HexString.
+     *
      * @param s The source string.
      * @return The hex string of the origin.
      */
@@ -232,6 +242,7 @@ public final class HashUtil {
 
     /**
      * Transfer a <b>hex</b> string to byte array.
+     *
      * @param src The hex string.
      * @return The byte stream of this string.
      */
@@ -247,6 +258,7 @@ public final class HashUtil {
 
     /**
      * Calc the unite result.
+     *
      * @param src0 The first op num.
      * @param src1 The second op num.
      * @return The result.
@@ -264,6 +276,7 @@ public final class HashUtil {
 
     /**
      * Generate a RC4 base.
+     *
      * @param input The input string bytes.
      * @param m_key The key.
      * @return The byte stream.

@@ -4,6 +4,7 @@ import cn.vorbote.time.DateTime;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -12,12 +13,9 @@ import java.util.Map;
 
 /**
  * This util class can be used for automatic conversion
- * between dictionaries/maps and objects
- * P.S: If your data cannot be transferred, please
- * contact me via email by sending the data's
- * detail to theodore0126@outlook.com.
+ * between dictionaries/maps and objects.
  *
- * @author TheodoreHills
+ * @author vorbote thills@vorbote.cn
  */
 @Slf4j
 public final class MapUtil {
@@ -46,7 +44,6 @@ public final class MapUtil {
     private static final String CLASS_DOUBLE = "class java.lang.Double";
     private static final String CLASS_BOOL = "class java.lang.Boolean";
     private static final String CLASS_DATE_TIME = "class cn.vorbote.time.DateTime";
-
 
     /**
      * Dynamically convert object to dictionary/map
@@ -80,14 +77,50 @@ public final class MapUtil {
      * @param map Map data to be convert
      * @param obj Target object should be explicitly given to a special
      *            instantiated object
+     * @see #SetObject(Map, Class)
      */
-    public static void SetObject(Map<String, Object> map, Object obj) {
+    @Deprecated
+    public static void SetObject(Map<String, Object> map, Object obj)
+            throws Exception {
+        obj = SetObject(map, obj.getClass());
+    }
+
+    /**
+     * Set a object by reflection, it will create a new instance by this method,
+     * you don't have to pass an instance to it anymore.
+     *
+     * @param map          The map which put the data.
+     * @param requiredType The type you want.
+     * @param <T>          The type you want.
+     * @return An instance of the class you provided, the instance contains all
+     * the field values with the same key in the Map.
+     * @throws NoSuchMethodException     This method will get a no-param
+     *                                   constructor, if the class you provided
+     *                                   doesn't contain this class, this
+     *                                   exception will be threw out.
+     * @throws IllegalAccessException    This method will use the no-param
+     *                                   constructor to create a new instance,
+     *                                   if your constructor is modified by
+     *                                   modifier {@code private},
+     *                                   {@code protected} or the default
+     *                                   modifier.
+     * @throws InvocationTargetException If the underlying constructor throws
+     *                                   an exception, then it will be throws
+     *                                   out by this method.
+     * @throws InstantiationException    If you provided an abstract class, it
+     *                                   will throws out this exception.
+     * @see Class#getConstructor(Class...)
+     * @see java.lang.reflect.Constructor#newInstance(Object...)
+     */
+    public static <T> T SetObject(Map<String, Object> map, Class<T> requiredType)
+            throws Exception {
+        T bean = requiredType.getConstructor().newInstance();
         if (map != null) {
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 try {
                     String entryValue = entry.getValue().toString();
                     // 根据字段名获取字段
-                    Field field = obj.getClass().getDeclaredField(entry.getKey());
+                    Field field = requiredType.getDeclaredField(entry.getKey());
 
                     // 判断类中对应字段的Class
                     switch (field.getGenericType().toString()) {
@@ -142,12 +175,13 @@ public final class MapUtil {
                     }
 
                     // 设置值
-                    SetFieldValue(obj, entry.getKey(), entry.getValue());
+                    SetFieldValue(bean, entry.getKey(), entry.getValue());
                 } catch (Exception e) {
                     log.error("Map to Object failed.");
                 }
             }
         }
+        return bean;
     }
 
 
@@ -158,10 +192,10 @@ public final class MapUtil {
      *
      * @param fieldName Field name
      * @param obj       object
-     * @return A string of the object corresponding
-     * to the object value
-     * @throws Exception Abnormalities that may appear, such as
-     *                   <code>java.lang.NullPointerException</code>, etc.
+     * @return A string of the object corresponding to the object value.
+     * @throws Exception Exceptions will be caused due to other methods, please see upriver
+     *                   methods for details of these Exceptions' info.
+     * @see Field#setAccessible(boolean)
      */
     public static String GetFieldValue(Object obj, String fieldName) throws Exception {
         try {
@@ -178,6 +212,31 @@ public final class MapUtil {
         return "";
     }
 
+    /**
+     * Get the specified field value, equivalent to {@code obj.getFieldName}. Before using
+     * this method, please make sure that you have a <strong>getter</strong> for that field
+     * you need.
+     *
+     * @param fieldName Field name
+     * @param obj       object
+     * @return A string of the object corresponding to the object value
+     * @throws Exception Exceptions will be caused due to other methods, please see upriver
+     *                   methods for details of these Exceptions' info.
+     * @see Field#get(Object)
+     * @see Field#setAccessible(boolean)
+     */
+    public static <T> T GetFieldValue(Object obj, String fieldName, Class<T> requiredClass) throws Exception {
+        try {
+            var objClass = obj.getClass();
+            var field = objClass.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            var value = field.get(obj);
+            return Cast(value, requiredClass);
+        } catch (Exception ex) {
+            log.error("Failed getting object: " + ex.getLocalizedMessage());
+            throw new Exception("Failed getting object.");
+        }
+    }
 
     /**
      * Get the specified field value, equivalent to {@code obj.setFieldName}. Before using
@@ -245,5 +304,22 @@ public final class MapUtil {
         } else {
             return String.valueOf(obj);
         }
+    }
+
+    /**
+     * Cast the value to the required type. The value had better to be a
+     * instance of {@code Object} or the super class of the required
+     * class.
+     *
+     * @param value        The value.
+     * @param requiredType The required type.
+     * @param <T>          The required type.
+     * @return The value in the form of the instance of the required type.
+     */
+    public static <T> T Cast(Object value, Class<T> requiredType) {
+        if (requiredType.isInstance(value)) {
+            return requiredType.cast(value);
+        }
+        return null;
     }
 }
