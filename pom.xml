@@ -9,7 +9,7 @@
         <maven.compiler.target>11</maven.compiler.target>
 
         <!--由cn.vorbote编写的dependency-->
-        <project.version>2.4.1</project.version>
+        <project.version>2.6.0</project.version>
     </properties>
 
     <parent>
